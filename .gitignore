@@ -1,0 +1,6 @@
+node_modules
+.env
+__pycache__
+.ipynb_checkpoints
+*.pkl
+ml-model/*.pkl
