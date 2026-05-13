@@ -1,14 +1,28 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pickle
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 CORS(app)
 
-# ✅ load model
-similarity = pickle.load(open("../ml-model/similarity.pkl", "rb"))
-movies = pickle.load(open("../ml-model/movies.pkl", "rb"))
+# ✅ Load dataset
+movies = pd.read_csv("../ml-model/movies.csv")
+
+# ✅ Prepare features
+movies["combined"] = (
+    movies["genres"].fillna("") + " " +
+    movies["keywords"].fillna("") + " " +
+    movies["overview"].fillna("")
+)
+
+# ✅ Vectorize text
+vectorizer = TfidfVectorizer(stop_words="english")
+matrix = vectorizer.fit_transform(movies["combined"])
+
+# ✅ Compute similarity
+similarity = cosine_similarity(matrix)
 
 def recommend(movie):
     movie = movie.lower()
@@ -59,4 +73,4 @@ def get_recommendation():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
