@@ -3,4 +3,8 @@ node_modules
 __pycache__
 .ipynb_checkpoints
 *.pkl
+<<<<<<< HEAD
 ml-model/*.pklgit add .
+=======
+ml-model/*.pkl
+>>>>>>> c06c80d7cea0ede4713d5a64d439ef8aca9158a6
