@@ -65,16 +65,21 @@ def get_recommendations(movie):
     }
 
 
-@app.route("/recommend", methods=["GET", "POST", "OPTIONS"])
-def recommend():
-    if request.method == "GET":
-        return "Use POST to send movie name 🎬"
+@app.route("/", methods=["GET"])
+def home():
+    return "Backend is running ✅", 200
 
-    data = request.json
+
+@app.route("/recommend", methods=["GET", "POST"])
+def recommend_route():
+    if request.method == "GET":
+        return "Use POST to send movie name 🎬", 200
+
+    data = request.get_json(force=True)
     movie = data.get("movie")
 
     results = get_recommendations(movie)
-    return jsonify(results)
+    return jsonify(results), 200
 
 
 if __name__ == "__main__":
