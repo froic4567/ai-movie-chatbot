@@ -5,7 +5,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=True
+)
 
 # ✅ Load dataset
 movies = pd.read_csv("../ml-model/movies.csv")
@@ -24,7 +29,7 @@ matrix = vectorizer.fit_transform(movies["combined"])
 # ✅ Compute similarity
 similarity = cosine_similarity(matrix)
 
-def recommend(movie):
+def get_recommendations(movie):
     movie = movie.lower()
 
     # ✅ exact match
@@ -60,15 +65,15 @@ def recommend(movie):
     }
 
 
-@app.route("/recommend", methods=["GET", "POST"])
-def get_recommendation():
+@app.route("/recommend", methods=["GET", "POST", "OPTIONS"])
+def recommend():
     if request.method == "GET":
         return "Use POST to send movie name 🎬"
 
     data = request.json
     movie = data.get("movie")
 
-    results = recommend(movie)
+    results = get_recommendations(movie)
     return jsonify(results)
 
 
